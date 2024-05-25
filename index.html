@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cache Display</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        #cache {
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            width: 80%;
+            max-width: 600px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        #content {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        input[type="text"] {
+            flex: 1;
+            padding: 5px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #28a745;
+            color: #fff;
+            cursor: pointer;
+        }
+        button.remove {
+            background-color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+<div id="cache">
+    <h1>Cache Content</h1>
+    <div id="content"></div>
+    <div class="form-group">
+        <input type="text" id="addValue" placeholder="Add to cache">
+        <button onclick="addToCache()">Add</button>
+    </div>
+    <div class="form-group">
+        <input type="text" id="removeValue" placeholder="Remove from cache">
+        <button class="remove" onclick="removeFromCache()">Remove</button>
+    </div>
+</div>
+<script>
+    async function fetchData() {
+        const response = await fetch('/cache');
+        const data = await response.json();
+        document.getElementById('content').innerText = JSON.stringify(data, null, 2);
+    }
+
+    async function addToCache() {
+        const value = document.getElementById('addValue').value;
+        if (value) {
+            await fetch('/cache', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ value })
+            });
+            fetchData();
+            document.getElementById('addValue').value = '';
+        }
+    }
+
+    async function removeFromCache() {
+        const value = document.getElementById('removeValue').value;
+        if (value) {
+            await fetch('/cache', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ value })
+            });
+            fetchData();
+            document.getElementById('removeValue').value = '';
+        }
+    }
+
+    fetchData();
+</script>
+</body>
+</html>
