@@ -115,7 +115,7 @@ func main() {
 
 	router := gin.Default()
 	router.Static("/static", "./static")
-	router.LoadHTMLFiles("index.html")
+	router.LoadHTMLFiles("static/index.html")
 
 	router.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", nil)
